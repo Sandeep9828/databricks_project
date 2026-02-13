@@ -1,0 +1,21 @@
+# The main pipeline for dlt_pipeline
+
+resources:
+  pipelines:
+    bronze_silver_etl:
+      name: bronze_to_silver
+      configuration:
+        catalog_name: ${var.catalog}
+      libraries:
+        - glob:
+            include: ../src/bronze_silver/transformations/clean_earthquake_data.py
+      schema: silver
+      continuous: false
+      development: false
+      photon: true
+      channel: CURRENT
+      catalog: ${var.catalog}
+      serverless: true
+      root_path: ../src/bronze_silver/transformations
+
+

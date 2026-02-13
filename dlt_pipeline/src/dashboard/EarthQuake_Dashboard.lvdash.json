@@ -1,0 +1,1146 @@
+{
+  "datasets": [
+    {
+      "name": "49d2edca",
+      "displayName": "Seismic Activity Table Overview",
+      "queryLines": [
+        "select * from silver.earthquake_data;"
+      ],
+      "catalog": "dlt_pipeline_dev",
+      "schema": "silver"
+    },
+    {
+      "name": "5be955af",
+      "displayName": "EarthQuake_Type",
+      "queryLines": [
+        "SELECT\n",
+        "    COUNT(*) AS total_magnitude_bucket,\n",
+        "    magnitude_bucket\n",
+        "FROM (\n",
+        "    SELECT\n",
+        "        CASE\n",
+        "            WHEN mag < 2 THEN 'Micro (<2)'\n",
+        "            WHEN mag >= 2 AND mag < 3 THEN 'Minor (2–3)'\n",
+        "            WHEN mag >= 3 AND mag < 4 THEN 'Light (3–4)'\n",
+        "            ELSE 'Moderate+ (4+)'\n",
+        "        END AS magnitude_bucket\n",
+        "    FROM silver.earthquake_data\n",
+        ") t\n",
+        "GROUP BY magnitude_bucket;"
+      ],
+      "catalog": "dlt_pipeline_dev",
+      "schema": "silver"
+    },
+    {
+      "name": "1aa7dd49",
+      "displayName": "Earthquake Events by Country Count",
+      "queryLines": [
+        "SELECT\n",
+        "    COUNT(*) AS event_count,\n",
+        "    CASE\n",
+        "        WHEN SIZE(SPLIT(place, ', ')) > 1\n",
+        "            THEN SPLIT(place, ', ')[1]\n",
+        "        ELSE SPLIT(place, ', ')[0]\n",
+        "    END AS country\n",
+        "FROM silver.earthquake_data\n",
+        "GROUP BY\n",
+        "    CASE\n",
+        "        WHEN SIZE(SPLIT(place, ', ')) > 1\n",
+        "            THEN SPLIT(place, ', ')[1]\n",
+        "        ELSE SPLIT(place, ', ')[0]\n",
+        "    END;"
+      ],
+      "catalog": "dlt_pipeline_dev",
+      "schema": "silver"
+    }
+  ],
+  "pages": [
+    {
+      "name": "a787fe90",
+      "displayName": "EarthQuake",
+      "layout": [
+        {
+          "widget": {
+            "name": "05f5a55b",
+            "multilineTextboxSpec": {
+              "lines": [
+                "<span style=\"font-size: 60px;line-height: 1.5;font-family: Georgia;color: #077A9D;\">**EarthQuake Dashboard**</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "earthquake",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "49d2edca",
+                  "fields": [
+                    {
+                      "name": "mag",
+                      "expression": "`mag`"
+                    },
+                    {
+                      "name": "place",
+                      "expression": "`place`"
+                    },
+                    {
+                      "name": "time",
+                      "expression": "`time`"
+                    },
+                    {
+                      "name": "url",
+                      "expression": "`url`"
+                    },
+                    {
+                      "name": "status",
+                      "expression": "`status`"
+                    },
+                    {
+                      "name": "tsunami",
+                      "expression": "`tsunami`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "invisibleColumns": [
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "updated",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100003,
+                  "title": "updated",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "tz",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100004,
+                  "title": "tz",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "detail",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100006,
+                  "title": "detail",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "felt",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100007,
+                  "title": "felt",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "cdi",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100008,
+                  "title": "cdi",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "mmi",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100009,
+                  "title": "mmi",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "alert",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100010,
+                  "title": "alert",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "sig",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100013,
+                  "title": "sig",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "net",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100014,
+                  "title": "net",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "code",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100015,
+                  "title": "code",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "ids",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100016,
+                  "title": "ids",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "sources",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100017,
+                  "title": "sources",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "types",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100018,
+                  "title": "types",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0.00",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "nst",
+                  "type": "float",
+                  "displayAs": "number",
+                  "order": 100019,
+                  "title": "nst",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0.00",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "dmin",
+                  "type": "float",
+                  "displayAs": "number",
+                  "order": 100020,
+                  "title": "dmin",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0.00",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "rms",
+                  "type": "float",
+                  "displayAs": "number",
+                  "order": 100021,
+                  "title": "rms",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0.00",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "gap",
+                  "type": "float",
+                  "displayAs": "number",
+                  "order": 100022,
+                  "title": "gap",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "magType",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100023,
+                  "title": "magType",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "type",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100024,
+                  "title": "type",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "title",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100025,
+                  "title": "title",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "id",
+                  "type": "string",
+                  "displayAs": "string",
+                  "order": 100026,
+                  "title": "id",
+                  "allowSearch": false,
+                  "alignContent": "left",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0.00",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "longitude",
+                  "type": "float",
+                  "displayAs": "number",
+                  "order": 100027,
+                  "title": "longitude",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0.00",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "latitude",
+                  "type": "float",
+                  "displayAs": "number",
+                  "order": 100028,
+                  "title": "latitude",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "numberFormat": "0.00",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "depth",
+                  "type": "float",
+                  "displayAs": "number",
+                  "order": 100029,
+                  "title": "depth",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                },
+                {
+                  "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                  "booleanValues": [
+                    "false",
+                    "true"
+                  ],
+                  "imageUrlTemplate": "{{ @ }}",
+                  "imageTitleTemplate": "{{ @ }}",
+                  "imageWidth": "",
+                  "imageHeight": "",
+                  "linkUrlTemplate": "{{ @ }}",
+                  "linkTextTemplate": "{{ @ }}",
+                  "linkTitleTemplate": "{{ @ }}",
+                  "linkOpenInNewTab": true,
+                  "name": "_loadtime",
+                  "type": "datetime",
+                  "displayAs": "datetime",
+                  "order": 100030,
+                  "title": "_loadtime",
+                  "allowSearch": false,
+                  "alignContent": "right",
+                  "allowHTML": false,
+                  "highlightLinks": false,
+                  "useMonospaceFont": false,
+                  "preserveWhitespace": false
+                }
+              ],
+              "allowHTMLByDefault": false,
+              "itemsPerPage": 25,
+              "paginationSize": "default",
+              "condensed": true,
+              "withRowNumber": false,
+              "frame": {
+                "showTitle": true,
+                "title": "EarthQuake Details"
+              },
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "mag",
+                    "numberFormat": "0.00",
+                    "booleanValues": [
+                      "false",
+                      "true"
+                    ],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "float",
+                    "displayAs": "number",
+                    "visible": true,
+                    "order": 100000,
+                    "title": "mag",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "place",
+                    "booleanValues": [
+                      "false",
+                      "true"
+                    ],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "string",
+                    "displayAs": "string",
+                    "visible": true,
+                    "order": 100001,
+                    "title": "place",
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "time",
+                    "dateTimeFormat": "DD/MM/YYYY HH:mm:ss.SSS",
+                    "booleanValues": [
+                      "false",
+                      "true"
+                    ],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "datetime",
+                    "displayAs": "datetime",
+                    "visible": true,
+                    "order": 100002,
+                    "title": "time",
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "url",
+                    "booleanValues": [
+                      "false",
+                      "true"
+                    ],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "string",
+                    "displayAs": "string",
+                    "visible": true,
+                    "order": 100005,
+                    "title": "url",
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "status",
+                    "booleanValues": [
+                      "false",
+                      "true"
+                    ],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "string",
+                    "displayAs": "string",
+                    "visible": true,
+                    "order": 100011,
+                    "title": "status",
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "tsunami",
+                    "booleanValues": [
+                      "false",
+                      "true"
+                    ],
+                    "imageUrlTemplate": "{{ @ }}",
+                    "imageTitleTemplate": "{{ @ }}",
+                    "imageWidth": "",
+                    "imageHeight": "",
+                    "linkUrlTemplate": "{{ @ }}",
+                    "linkTextTemplate": "{{ @ }}",
+                    "linkTitleTemplate": "{{ @ }}",
+                    "linkOpenInNewTab": true,
+                    "type": "string",
+                    "displayAs": "string",
+                    "visible": true,
+                    "order": 100012,
+                    "title": "tsunami",
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "mapview-earthquake",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "49d2edca",
+                  "fields": [
+                    {
+                      "name": "latitude",
+                      "expression": "`latitude`"
+                    },
+                    {
+                      "name": "longitude",
+                      "expression": "`longitude`"
+                    },
+                    {
+                      "name": "countdistinct(tsunami)",
+                      "expression": "COUNT(DISTINCT `tsunami`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "MapView of EarthQuake places"
+              },
+              "mark": {
+                "size": -1.8
+              },
+              "widgetType": "symbol-map",
+              "encodings": {
+                "coordinates": {
+                  "latitude": {
+                    "fieldName": "latitude"
+                  },
+                  "longitude": {
+                    "fieldName": "longitude"
+                  }
+                },
+                "size": {
+                  "fieldName": "countdistinct(tsunami)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "earthquake-1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "5be955af",
+                  "fields": [
+                    {
+                      "name": "total_magnitude_bucket",
+                      "expression": "`total_magnitude_bucket`"
+                    },
+                    {
+                      "name": "magnitude_bucket",
+                      "expression": "`magnitude_bucket`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "EarthQuake_Magnitude"
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "total_magnitude_bucket",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Total_Magnitude"
+                },
+                "color": {
+                  "fieldName": "magnitude_bucket",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                },
+                "extra": [
+                  {
+                    "fieldName": "magnitude_bucket"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 13,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "countries-where-earthquake-occur",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1aa7dd49",
+                  "fields": [
+                    {
+                      "name": "event_count",
+                      "expression": "`event_count`"
+                    },
+                    {
+                      "name": "country",
+                      "expression": "`country`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Countries where EarthQuake occur"
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "event_count",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Total place Earthquake"
+                },
+                "color": {
+                  "fieldName": "country",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 13,
+            "width": 3,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "3db9d98f",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "4c4da98b",
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {},
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
